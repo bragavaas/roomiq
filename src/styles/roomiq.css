@@ -1,0 +1,96 @@
+/* 
+label: ROOMIQ
+value: roomiq  
+*/
+
+:root[data-theme-preset="roomiq"] {
+  --radius: 0.625rem;
+
+  --background: #FFFFFF;
+  --foreground: #03045E;
+
+  --card: #FFFFFF;
+  --card-foreground: #03045E;
+
+  --popover: #FFFFFF;
+  --popover-foreground: #03045E;
+
+  --primary: #03045E;
+  --primary-foreground: #FFFFFF;
+
+  --secondary: #00B4D8;
+  --secondary-foreground: #FFFFFF;
+
+  --muted: #CAF0F8;
+  --muted-foreground: #03045E;
+
+  --accent: #00B4D8;
+  --accent-foreground: #FFFFFF;
+
+  --destructive: #E63946;
+  --destructive-foreground: #FFFFFF;
+
+  --border: #CAF0F8;
+  --input: #CAF0F8;
+  --ring: #03045E;
+
+  --chart-1: #03045E;
+  --chart-2: #00B4D8;
+  --chart-3: #CAF0F8;
+  --chart-4: #90E0EF;
+  --chart-5: #0077B6;
+
+  --sidebar: #F8FAFC;
+  --sidebar-foreground: #03045E;
+  --sidebar-primary: #03045E;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #00B4D8;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #CAF0F8;
+  --sidebar-ring: #03045E;
+}
+
+.dark:root[data-theme-preset="roomiq"] {
+  --background: #03045E;
+  --foreground: #FFFFFF;
+
+  --card: #023E8A;
+  --card-foreground: #FFFFFF;
+
+  --popover: #023E8A;
+  --popover-foreground: #FFFFFF;
+
+  --primary: #CAF0F8;
+  --primary-foreground: #03045E;
+
+  --secondary: #00B4D8;
+  --secondary-foreground: #FFFFFF;
+
+  --muted: #0077B6;
+  --muted-foreground: #CAF0F8;
+
+  --accent: #00B4D8;
+  --accent-foreground: #FFFFFF;
+
+  --destructive: #E63946;
+  --destructive-foreground: #FFFFFF;
+
+  --border: #0077B6;
+  --input: #0077B6;
+  --ring: #CAF0F8;
+
+  --chart-1: #CAF0F8;
+  --chart-2: #90E0EF;
+  --chart-3: #00B4D8;
+  --chart-4: #0077B6;
+  --chart-5: #03045E;
+
+  --sidebar: #023E8A;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #CAF0F8;
+  --sidebar-primary-foreground: #03045E;
+  --sidebar-accent: #00B4D8;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #0077B6;
+  --sidebar-ring: #CAF0F8;
+}

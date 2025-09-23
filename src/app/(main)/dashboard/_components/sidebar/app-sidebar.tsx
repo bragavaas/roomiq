@@ -1,6 +1,7 @@
 "use client";
 
 import { Settings, CircleHelp, Search, Database, ClipboardList, File, Command } from "lucide-react";
+import Image from "next/image";
 
 import {
   Sidebar,
@@ -17,6 +18,9 @@ import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
 
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
+
+import { useTheme } from "next-themes";
+
 
 const data = {
   navSecondary: [
@@ -56,17 +60,23 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+  const { theme } = useTheme();
   return (
     <Sidebar {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
-              <a href="#">
-                <Command />
-                <span className="text-base font-semibold">{APP_CONFIG.name}</span>
+            <SidebarMenuButton>
+              <a href="#" className="flex items-center gap-2">
+              <Image
+                src={theme === "dark" ? "/logo-white.svg" : "/logo-black.svg"}
+                alt="ROOMIQ Logo"
+                width={150}
+                height={100}
+              />
               </a>
-            </SidebarMenuButton>
+          </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

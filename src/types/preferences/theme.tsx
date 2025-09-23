@@ -24,20 +24,12 @@ export const THEME_PRESET_OPTIONS = [
       dark: "oklch(0.922 0 0)",
     },
   },
-  {
-    label: "Brutalist",
-    value: "brutalist",
+    {
+    label: "ROOMIQ",
+    value: "roomiq",
     primary: {
-      light: "oklch(0.6489 0.2370 26.9728)",
-      dark: "oklch(0.7044 0.1872 23.1858)",
-    },
-  },
-  {
-    label: "Soft Pop",
-    value: "soft-pop",
-    primary: {
-      light: "oklch(0.5106 0.2301 276.9656)",
-      dark: "oklch(0.6801 0.1583 276.9349)",
+      light: "#03045E", // azul escuro (primary)
+      dark: "#CAF0F8",  // azul claro no dark mode
     },
   },
   {
