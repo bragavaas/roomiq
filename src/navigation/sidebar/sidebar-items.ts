@@ -1,20 +1,7 @@
 import {
-  ShoppingBag,
-  Forklift,
-  Mail,
-  MessageSquare,
-  Calendar,
-  Kanban,
-  ReceiptText,
-  Users,
-  Lock,
-  Fingerprint,
-  SquareArrowUpRight,
   LayoutDashboard,
   ChartBar,
-  Banknote,
   Gauge,
-  GraduationCap,
   type LucideIcon,
 } from "lucide-react";
 
@@ -46,13 +33,23 @@ export interface NavGroup {
 export const sidebarItems: NavGroup[] = [
   {
     id: 1,
-    label: "Dashboard",
+    label: "Enhanced Property Analytics Dashboard",
     items: [
       {
-        title: "Default",
-        url: "/dashboard/default",
+        title: "New Country Dashboard",
+        url: "/dashboard/newcountrydashboard",
         icon: LayoutDashboard,
       },
+      {
+        title: "Predictor",
+        url: "/dashboard/predictor",
+        icon: Gauge,
+      },
+      {
+        title: "Analyzer",
+        url: "/dashboard/analyzer",
+        icon: ChartBar,
+      }
     ],
   },
 ];

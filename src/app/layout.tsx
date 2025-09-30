@@ -9,6 +9,9 @@ import { getPreference } from "@/server/server-actions";
 import { PreferencesStoreProvider } from "@/stores/preferences/preferences-provider";
 import { THEME_MODE_VALUES, THEME_PRESET_VALUES, type ThemePreset, type ThemeMode } from "@/types/preferences/theme";
 
+import 'leaflet/dist/leaflet.css';
+import type { AppProps } from 'next/app';
+
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });

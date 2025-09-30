@@ -147,7 +147,7 @@ export function ChartAreaInteractive() {
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Total Visitors</CardTitle>
+        <CardTitle>Total Bookings</CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">Total for the last 3 months</span>
           <span className="@[540px]/card:hidden">Last 3 months</span>
