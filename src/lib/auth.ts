@@ -1,46 +1,73 @@
-import { type NextAuthOptions, getServerSession as nextAuthGetServerSession } from "next-auth";
+// src/lib/auth.ts
+import { type NextAuthOptions, getServerSession as _getServerSession } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { prisma } from "@/lib/db/prisma";
 
-const isDev = process.env.NODE_ENV !== "production";
+// If you also use OAuth later, import providers conditionally by envs
+// import GitHubProvider from "next-auth/providers/github";
+// import GoogleProvider from "next-auth/providers/google";
 
+const isProd = process.env.NODE_ENV === "production";
+
+/**
+ * Central NextAuth config used by both the route handler and server components.
+ * - Email provider logs the magic link in dev (no SMTP needed).
+ * - PrismaAdapter persists verification tokens & users (required for Email).
+ * - JWT strategy with role copied from the User table into the token/session.
+ * - Safe redirect callback -> defaults to /dashboard.
+ */
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     EmailProvider({
-      sendVerificationRequest: async ({ identifier, url /*, provider*/ }) => {
-        // DEV ONLY: log magic link; in prod wire SMTP or Resend/Sendgrid.
-        // eslint-disable-next-line no-console
-        console.log(`[Magic Link] To: ${identifier}\n${url}\n`);
+      async sendVerificationRequest({ identifier, url }) {
+        if (!isProd) {
+          // Dev-only convenience: log the magic link so you can click it
+          // eslint-disable-next-line no-console
+          console.log(`[Magic Link]\nTo: ${identifier}\n${url}\n`);
+          return;
+        }
+        // In production, set EMAIL_SERVER and EMAIL_FROM in env and let NextAuth send via nodemailer.
       },
-      // In production, configure proper email server:
-      // server: process.env.EMAIL_SERVER,
-      // from: process.env.EMAIL_FROM,
-      maxAge: 60 * 60, // 1h
+      maxAge: 60 * 60, // 1 hour
+      // server: process.env.EMAIL_SERVER, // (enable in prod)
+      // from: process.env.EMAIL_FROM,     // (enable in prod)
     }),
-    // Optional OAuth (commented until configured):
-    // GitHubProvider({ clientId: process.env.GITHUB_ID!, clientSecret: process.env.GITHUB_SECRET! }),
-    // GoogleProvider({ clientId: process.env.GOOGLE_ID!, clientSecret: process.env.GOOGLE_SECRET! }),
+    // Conditionally add OAuth later:
+    // ...(process.env.GITHUB_ID && process.env.GITHUB_SECRET ? [GitHubProvider({ clientId: process.env.GITHUB_ID!, clientSecret: process.env.GITHUB_SECRET! })] : []),
+    // ...(process.env.GOOGLE_ID && process.env.GOOGLE_SECRET ? [GoogleProvider({ clientId: process.env.GOOGLE_ID!, clientSecret: process.env.GOOGLE_SECRET! })] : []),
   ],
   session: { strategy: "jwt" },
-  pages: {
-    signIn: "/signin",
-  },
+  pages: { signIn: "/signin" },
   callbacks: {
     async jwt({ token, user }) {
-      // Ensure role exists for later gating; defaults to 'free'
-      if (user && !("role" in token)) token.role = "free";
+      if (user) {
+        // copy DB fields to token at first sign-in
+        (token as any).userId = (user as any).id;
+        (token as any).role = (user as any).role ?? "free";
+      }
       return token;
     },
     async session({ session, token }) {
-      // Expose role to client
       (session as any).role = (token as any).role ?? "free";
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) return `${baseUrl}${url}`; // relative OK
+      try {
+        const u = new URL(url);
+        if (u.origin === baseUrl) return url;            // same-origin OK
+      } catch { /* ignore */ }
+      return `${baseUrl}/dashboard`;                    // fallback
+    },
   },
-  // Security hardening
-  cookies: {}, // use defaults; secure in prod automatically on HTTPS
-  // NOTE: Set NEXTAUTH_URL and NEXTAUTH_SECRET in env
 };
 
+/**
+ * App Router helper so server components/route handlers can do:
+ *   const session = await getServerSession();
+ */
 export function getServerSession() {
-  return nextAuthGetServerSession(authOptions);
+  return _getServerSession(authOptions);
 }
