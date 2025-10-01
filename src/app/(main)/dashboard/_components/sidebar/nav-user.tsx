@@ -1,6 +1,7 @@
 "use client";
 
 import { EllipsisVertical, CircleUser, CreditCard, MessageSquareDot, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -46,6 +47,7 @@ export function NavUser({
               <EllipsisVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
@@ -64,7 +66,9 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+
             <DropdownMenuSeparator />
+
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <CircleUser />
@@ -79,8 +83,20 @@ export function NavUser({
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
+
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+
+            {/* Logout */}
+            <DropdownMenuItem
+              onSelect={(e) => {
+                // Prevent the default selection behavior so we can control focus/redirect cleanly
+                e.preventDefault();
+                // Redirect to /signin after session is cleared
+                signOut({ callbackUrl: "/signin" });
+              }}
+              className="text-destructive focus:text-destructive"
+              data-testid="nav-logout"
+            >
               <LogOut />
               Log out
             </DropdownMenuItem>
