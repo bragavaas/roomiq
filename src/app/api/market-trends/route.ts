@@ -1,14 +1,28 @@
-import { NextResponse } from "next/server";
+import { z } from "zod";
+import { zodToErrorResponse, toErrorResponse } from "@/lib/api/errors";
+// import { requireSession } from "@/lib/api/auth-guard"; // if this is secure
 
-// Mock dataset — later this will come from your real backend
-const locationsDallas = [
-  { id: 1, name: "Downtown Dallas", coords: [32.7767, -96.7970] },
-  { id: 2, name: "Deep Ellum", coords: [32.7846, -96.7836] },
-  { id: 3, name: "Bishop Arts District", coords: [32.7473, -96.8280] },
-  { id: 4, name: "Uptown Dallas", coords: [32.8005, -96.8039] },
-  { id: 5, name: "Lakewood", coords: [32.8123, -96.7445] },
-];
+const Query = z.object({
+  city: z.string().min(1),
+  start: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  end: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+});
 
-export async function GET() {
-  return NextResponse.json(locationsDallas);
+export async function GET(req: Request) {
+  try {
+    const url = new URL(req.url);
+    const parsed = Query.parse({
+      city: url.searchParams.get("city"),
+      start: url.searchParams.get("start"),
+      end: url.searchParams.get("end"),
+    });
+
+    // If secure, uncomment
+    // await requireSession();
+
+    // ... your data fetch using parsed.city/start/end ...
+    return Response.json({ city: parsed.city, series: [] });
+  } catch (e: any) {
+    return e?.name === "ZodError" ? zodToErrorResponse(e) : toErrorResponse(e);
+  }
 }

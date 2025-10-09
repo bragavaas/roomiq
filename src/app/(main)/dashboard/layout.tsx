@@ -23,18 +23,24 @@ import { AccountSwitcher } from "./_components/sidebar/account-switcher";
 import { LayoutControls } from "./_components/sidebar/layout-controls";
 import { SearchDialog } from "./_components/sidebar/search-dialog";
 import { ThemeSwitcher } from "./_components/sidebar/theme-switcher";
+import RoleBadge from "@/components/app/RoleBadge";
+import { redirect } from "next/navigation";
+import { getServerSession } from "@/lib/auth";
+
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export default async function Layout({ children }: Readonly<{ children: ReactNode }>) {
+  const session = await getServerSession();
+  if (!session) redirect("/signin?callbackUrl=/dashboard");
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
-
   const [sidebarVariant, sidebarCollapsible, contentLayout, navbarStyle] = await Promise.all([
     getPreference<SidebarVariant>("sidebar_variant", SIDEBAR_VARIANT_VALUES, "inset"),
     getPreference<SidebarCollapsible>("sidebar_collapsible", SIDEBAR_COLLAPSIBLE_VALUES, "icon"),
     getPreference<ContentLayout>("content_layout", CONTENT_LAYOUT_VALUES, "centered"),
     getPreference<NavbarStyle>("navbar_style", NAVBAR_STYLE_VALUES, "scroll"),
   ]);
-
   const layoutPreferences = {
     contentLayout,
     variant: sidebarVariant,
@@ -69,6 +75,7 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
               <SearchDialog />
             </div>
             <div className="flex items-center gap-2">
+              <RoleBadge />
               <LayoutControls {...layoutPreferences} />
               <ThemeSwitcher />
               <AccountSwitcher users={users} />

@@ -1,9 +1,8 @@
-import { NextResponse } from "next/server";
-import { getServerSession } from "@/lib/auth";
+import { requireSession } from "@/lib/api/auth-guard";
+import { toErrorResponse } from "@/lib/api/errors";
+import { secure } from "@/lib/api/handler";
 
-export async function GET() {
-  const session = await getServerSession();
-  if (!session) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
-
-  return NextResponse.json({ ok: true, email: session.user?.email, role: session.role });
-}
+export const GET = secure(async () => {
+  const session = await requireSession();
+  return Response.json({ ok: true, email: session.user?.email, role: session.role });
+})

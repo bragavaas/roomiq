@@ -2,6 +2,7 @@ import { TrendingUp, TrendingDown } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { PaywallGuard } from "@/components/app/PaywallGuard";
 import Map from "@/components/map";
 
 export function SectionCards() {
@@ -57,23 +58,28 @@ export function SectionCards() {
       </CardFooter>
     </Card>
 
-    <Card className="@container/card">
-      <CardHeader>
-        <CardDescription>Total Revenue</CardDescription>
-        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">$46,754,891.08</CardTitle>
-        <CardAction>
-          <Badge variant="outline">
-            <TrendingUp /> +4.5%
-          </Badge>
-        </CardAction>
-      </CardHeader>
-      <CardFooter className="flex-col items-start gap-1.5 text-sm">
-        <div className="line-clamp-1 flex gap-2 font-medium">
-          Steady performance increase <TrendingUp className="size-4" />
-        </div>
-        <div className="text-muted-foreground">Meets growth projections</div>
-      </CardFooter>
-    </Card>
+
+    <PaywallGuard fallback={<p className="text-sm text-muted-foreground">This feature requires a paid plan.</p>}>
+      <Card className="@container/card">
+          <CardHeader>
+            <CardDescription>Total Revenue</CardDescription>
+            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">$46,754,891.08</CardTitle>
+            <CardAction>
+              <Badge variant="outline">
+                <TrendingUp /> +4.5%
+              </Badge>
+            </CardAction>
+          </CardHeader>
+          <CardFooter className="flex-col items-start gap-1.5 text-sm">
+            <div className="line-clamp-1 flex gap-2 font-medium">
+              Steady performance increase <TrendingUp className="size-4" />
+            </div>
+            <div className="text-muted-foreground">Meets growth projections</div>
+          </CardFooter>
+        </Card>
+    </PaywallGuard>
+
+   
   </div>
   );
 }

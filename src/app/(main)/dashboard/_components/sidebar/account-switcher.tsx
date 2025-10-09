@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { signOut } from "next-auth/react";
 
 import { BadgeCheck, Bell, CreditCard, LogOut } from "lucide-react";
 
@@ -36,12 +37,16 @@ export function AccountSwitcher({
           <AvatarFallback className="rounded-lg">{getInitials(activeUser.name)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent className="min-w-56 space-y-1 rounded-lg" side="bottom" align="end" sideOffset={4}>
         {users.map((user) => (
           <DropdownMenuItem
             key={user.email}
             className={cn("p-0", user.id === activeUser.id && "bg-accent/50 border-l-primary border-l-2")}
-            onClick={() => setActiveUser(user)}
+            onSelect={(e) => {
+              e.preventDefault(); // keep menu stable on keyboard select
+              setActiveUser(user);
+            }}
           >
             <div className="flex w-full items-center justify-between gap-2 px-1 py-1.5">
               <Avatar className="size-9 rounded-lg">
@@ -55,7 +60,9 @@ export function AccountSwitcher({
             </div>
           </DropdownMenuItem>
         ))}
+
         <DropdownMenuSeparator />
+
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <BadgeCheck />
@@ -70,8 +77,18 @@ export function AccountSwitcher({
             Notifications
           </DropdownMenuItem>
         </DropdownMenuGroup>
+
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+
+        {/* Log out */}
+        <DropdownMenuItem
+          onSelect={(e) => {
+            e.preventDefault();
+            signOut({ callbackUrl: "/signin" });
+          }}
+          className="text-destructive focus:text-destructive"
+          data-testid="account-switcher-logout"
+        >
           <LogOut />
           Log out
         </DropdownMenuItem>
