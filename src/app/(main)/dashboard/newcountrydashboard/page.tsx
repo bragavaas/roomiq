@@ -1,16 +1,15 @@
-import { Suspense } from "react";
-import { fetchCountryDashboardPageData } from "@/lib/api/newcountrydashboard";
-import type { CountryDashboardPageData } from "@/types/newcountrydashboard";
-
+import { fetchNewCountryDashboardPageData } from "@/lib/api/newcountrydashboard";
 import { SectionCards } from "./_components/section-cards";
 import { ChartAreaInteractive } from "./_components/chart-area-interactive";
 import { DataTable } from "./_components/data-table";
 import MapClient from "../_components/mapClient";
 import tableData from "./_components/data.json";
+import type { CountryDashboardPageData } from "@/types/dashboard-country";
+import { Suspense } from "react";
 
 export default async function Page() {
   // TODO: wire real filters from your global state/UI (query params or store)
-  const data: CountryDashboardPageData = await fetchCountryDashboardPageData({
+  const data: CountryDashboardPageData = await fetchNewCountryDashboardPageData({
     // start, end, country, city, propertyType, minBedrooms, maxBedrooms
   });
 
