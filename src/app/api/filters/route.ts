@@ -1,8 +1,4 @@
 import { secure } from "@/lib/api/handler";
+import { listCountries } from "@/mocks/filters";
 
-export const GET = secure(async () => {
-  const data = [
-    { country: "United States", country_code: "US" },
-  ];
-  return Response.json(data);
-})
+export const GET = secure(async () => Response.json(listCountries()));
