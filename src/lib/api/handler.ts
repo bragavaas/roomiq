@@ -2,25 +2,38 @@
 import { toErrorResponse } from "./errors";
 import { requireSession } from "./auth-guard";
 import { rateLimit } from "./ratelimit";
+import { isAdmin } from "../admin";
 
-type Handler = (req: Request) => Promise<Response> | Response;
+type NextHandler = (req: Request, ctx?: any, session?: any) => Promise<Response> | Response;
 
-/** Wrap any handler to standardize JSON errors */
-export function withErrors(h: Handler): Handler {
-  return async (req) => {
+export function withErrors(h: NextHandler): (req: Request, ctx?: any) => Promise<Response> {
+  return async (req, ctx) => {
     try {
-      return await h(req);
+      return await h(req, ctx);
     } catch (e) {
       return toErrorResponse(e);
     }
   };
 }
 
-/** Secure handler: rate-limit + auth check + error mapping */
-export function secure(h: Handler): Handler {
-  return withErrors(async (req) => {
-    await rateLimit(req);   // throws { status: 429, code: "RATE_LIMITED" }
-    await requireSession(); // throws { status: 401, code: "UNAUTHORIZED" }
-    return h(req);
+export function secure(
+  h: NextHandler,
+  opts?: { role?: "admin" | "free" }
+): (req: Request, ctx?: any) => Promise<Response> {
+  return withErrors(async (req, ctx) => {
+    await rateLimit(req);
+    const session = await requireSession();
+
+    // RBAC (defaults to free; only enforce admin when asked)
+    if (opts?.role === "admin") {
+      const email = session?.user?.email ?? null;
+      if (!isAdmin(email)) {
+        const err: any = new Error("FORBIDDEN");
+        err.status = 403;
+        err.code = "FORBIDDEN";
+        throw err;
+      }
+    }
+    return h(req, ctx, session);
   });
 }
